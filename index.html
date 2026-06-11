@@ -1,0 +1,1492 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marvel Universe — Characters, Comics & MCU Watch Order</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --red: #e62429;
+    --gold: #f0b90b;
+    --dark: #0a0a0f;
+    --darker: #050508;
+    --mid: #12121a;
+    --card: #161620;
+    --border: rgba(230,36,41,0.25);
+    --text: #e8e8f0;
+    --muted: #8888a0;
+    --glow: rgba(230,36,41,0.6);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--darker);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    width: 18px; height: 18px;
+    border: 2px solid var(--red);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: width .2s, height .2s, background .2s;
+    mix-blend-mode: difference;
+  }
+  .cursor-dot {
+    width: 4px; height: 4px;
+    background: var(--red);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%,-50%);
+  }
+  body:hover .cursor { opacity: 1; }
+
+  /* ── LOADING SCREEN ── */
+  #loader {
+    position: fixed; inset: 0;
+    background: var(--darker);
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    transition: opacity .8s ease, visibility .8s ease;
+  }
+  #loader.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+
+  .loader-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(64px, 12vw, 120px);
+    letter-spacing: 0.15em;
+    color: transparent;
+    -webkit-text-stroke: 2px var(--red);
+    position: relative;
+    animation: flickerIn 0.5s ease 0.3s forwards;
+    opacity: 0;
+  }
+  @keyframes flickerIn {
+    0%{ opacity:0; text-shadow:none }
+    30%{ opacity:1; text-shadow: 0 0 40px var(--glow), 0 0 80px var(--glow) }
+    60%{ opacity:0.4 }
+    100%{ opacity:1; text-shadow: 0 0 20px var(--glow) }
+  }
+
+  .loader-shield {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    border: 4px solid var(--red);
+    position: relative;
+    animation: spinShield 1.5s linear infinite;
+  }
+  .loader-shield::before {
+    content:'';
+    position:absolute; inset:8px;
+    border-radius:50%;
+    border: 3px solid rgba(255,255,255,0.3);
+    border-top-color: var(--gold);
+  }
+  .loader-shield::after {
+    content: '★';
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    color: var(--red);
+    animation: spinShield 1.5s linear infinite reverse;
+  }
+  @keyframes spinShield {
+    to { transform: rotate(360deg) }
+  }
+
+  .loader-bar {
+    width: clamp(200px, 40vw, 360px);
+    height: 3px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .loader-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+    border-radius: 99px;
+    width: 0%;
+    animation: loadBar 4.5s ease forwards;
+    box-shadow: 0 0 12px var(--glow);
+  }
+  @keyframes loadBar {
+    0%{width:0%} 30%{width:35%} 60%{width:65%} 80%{width:85%} 100%{width:100%}
+  }
+
+  .loader-text {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    text-transform: uppercase;
+    animation: pulse 1s ease infinite;
+  }
+  @keyframes pulse { 50%{ opacity:0.4 } }
+
+  /* SCAN LINES */
+  #loader::before {
+    content:'';
+    position:absolute;
+    inset:0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(0,0,0,0.15) 2px, rgba(0,0,0,0.15) 4px
+    );
+    pointer-events:none;
+    animation: scanMove 8s linear infinite;
+  }
+  @keyframes scanMove { to{ background-position:0 100% } }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 1000;
+    padding: 0 clamp(16px, 4vw, 48px);
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(180deg, rgba(5,5,8,0.95) 0%, transparent 100%);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(230,36,41,0.1);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.2em;
+    color: var(--red);
+    text-shadow: 0 0 20px var(--glow);
+    text-decoration: none;
+  }
+  .nav-logo span {
+    display: inline-block;
+    background: var(--red);
+    color: white;
+    padding: 2px 10px;
+    margin-right: 10px;
+    border-radius: 3px;
+    font-size: 22px;
+  }
+  .nav-links {
+    display: flex; gap: 8px; list-style: none;
+    align-items: center;
+  }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 4px;
+    transition: all .2s;
+    border: 1px solid transparent;
+  }
+  .nav-links a:hover, .nav-links a.active {
+    color: var(--text);
+    border-color: var(--border);
+    background: rgba(230,36,41,0.08);
+    text-shadow: 0 0 8px rgba(230,36,41,0.4);
+  }
+  .nav-ham { display:none; flex-direction:column; gap:5px; cursor:pointer; padding:8px; }
+  .nav-ham span { width:24px; height:2px; background:var(--text); border-radius:2px; transition:.3s; }
+  @media(max-width:768px){
+    .nav-links{ display:none; }
+    .nav-ham{ display:flex; cursor: auto; }
+    .nav-links.open{
+      display:flex; flex-direction:column;
+      position:absolute; top:64px; left:0; right:0;
+      background:rgba(5,5,8,0.98);
+      padding:16px; gap:4px;
+      border-bottom:1px solid var(--border);
+    }
+  }
+
+  /* ── HERO ── */
+  #hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background-image: url('bg.jpg');
+    background-size: cover;
+    background-position: center top;
+    filter: brightness(0.55) saturate(1.2);
+    transform: scale(1.05);
+    animation: heroPan 20s ease-in-out infinite alternate;
+  }
+  @keyframes heroPan { to{ transform: scale(1.1) translateX(-2%) } }
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(
+      105deg,
+      rgba(5,5,8,0.92) 0%,
+      rgba(5,5,8,0.6) 50%,
+      rgba(5,5,8,0.2) 100%
+    );
+  }
+  .hero-overlay-bottom {
+    position: absolute; bottom:0; left:0; right:0;
+    height:200px;
+    background: linear-gradient(to top, var(--darker), transparent);
+  }
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    padding: clamp(80px, 10vw, 120px) clamp(20px, 6vw, 80px) 60px;
+    max-width: 720px;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.4em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    border: 1px solid rgba(230,36,41,0.3);
+    padding: 6px 14px;
+    border-radius: 99px;
+    backdrop-filter: blur(8px);
+    animation: fadeSlideUp .8s ease 5.5s both;
+  }
+  .hero-tag::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--red); animation: pulse 1s infinite; }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(56px, 10vw, 120px);
+    line-height: 0.9;
+    letter-spacing: 0.05em;
+    color: var(--text);
+    text-shadow: 0 4px 40px rgba(0,0,0,0.8);
+    animation: fadeSlideUp .8s ease 5.7s both;
+  }
+  .hero-title .accent { color: var(--red); }
+  .hero-desc {
+    margin-top: 24px;
+    font-size: clamp(14px, 2vw, 17px);
+    color: var(--muted);
+    line-height: 1.7;
+    max-width: 480px;
+    animation: fadeSlideUp .8s ease 5.9s both;
+  }
+  .hero-btns {
+    margin-top: 36px;
+    display: flex; gap: 14px; flex-wrap: wrap;
+    animation: fadeSlideUp .8s ease 6.1s both;
+  }
+  .btn-primary {
+    background: var(--red);
+    color: white;
+    padding: 14px 32px;
+    border: none;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .25s;
+    box-shadow: 0 4px 24px rgba(230,36,41,0.4);
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover {
+    background: #ff2d34;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(230,36,41,0.6);
+  }
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    padding: 13px 32px;
+    border: 1px solid rgba(255,255,255,0.25);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 15px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .25s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-outline:hover {
+    border-color: var(--red);
+    color: var(--red);
+    transform: translateY(-2px);
+  }
+  .hero-stats {
+    position: absolute;
+    right: clamp(20px, 5vw, 80px);
+    bottom: 80px;
+    display: flex; gap: 40px;
+    animation: fadeSlideUp .8s ease 6.3s both;
+  }
+  .hero-stat { text-align: right; }
+  .hero-stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 42px;
+    color: var(--red);
+    line-height: 1;
+    text-shadow: 0 0 20px var(--glow);
+  }
+  .hero-stat-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  @keyframes fadeSlideUp { from{ opacity:0; transform:translateY(24px) } to{ opacity:1; transform:none } }
+  @media(max-width:768px){
+    .hero-stats{ display:none }
+  }
+
+  /* ── SECTION COMMONS ── */
+  section { padding: clamp(60px, 8vw, 100px) clamp(16px, 4vw, 60px); }
+  .section-label {
+    display: flex; align-items: center; gap: 12px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.4em;
+    color: var(--red);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .section-label::before { content:''; flex:0 0 32px; height:2px; background:var(--red); }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(36px, 5vw, 60px);
+    letter-spacing: 0.08em;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .section-sub {
+    color: var(--muted);
+    font-size: 15px;
+    margin-bottom: 40px;
+    max-width: 560px;
+  }
+
+  /* ── SEARCH & FILTER ── */
+  .search-bar-wrap {
+    display: flex; gap: 12px; align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+  .search-input {
+    flex: 1; min-width: 220px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 18px 12px 44px;
+    border-radius: 8px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color .2s;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 14px center;
+  }
+  .search-input:focus { border-color: var(--red); box-shadow: 0 0 0 2px rgba(230,36,41,0.15); }
+  .filter-select {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color .2s;
+  }
+  .filter-select:focus { border-color: var(--red); }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex; gap: 4px;
+    margin-bottom: 40px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 1px;
+  }
+  .tabs::-webkit-scrollbar { display:none }
+  .tab-btn {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 10px 20px;
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all .2s;
+    white-space: nowrap;
+    margin-bottom: -1px;
+  }
+  .tab-btn.active { color: var(--text); border-bottom-color: var(--red); }
+  .tab-btn:hover { color: var(--text); }
+
+  /* ── CHARACTER GRID ── */
+  .char-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .char-card {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .25s, border-color .25s, box-shadow .25s;
+    position: relative;
+    group: true;
+  }
+  .char-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    border-color: var(--border);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(230,36,41,0.2);
+  }
+  .char-img-wrap {
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    position: relative;
+  }
+  .char-img-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform .4s;
+  }
+  .char-card:hover .char-img-wrap img { transform: scale(1.1); }
+  .char-alignment {
+    position: absolute; top: 8px; right: 8px;
+    padding: 3px 8px;
+    border-radius: 99px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .good { background: rgba(0,200,100,0.2); color: #00c864; border: 1px solid rgba(0,200,100,0.3); }
+  .bad  { background: rgba(230,36,41,0.2); color: var(--red); border: 1px solid rgba(230,36,41,0.3); }
+  .neutral { background: rgba(255,200,0,0.15); color: var(--gold); border: 1px solid rgba(255,200,0,0.3); }
+  .char-info { padding: 12px 14px 14px; }
+  .char-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .char-fullname {
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-top: 2px;
+  }
+  .char-stats-mini {
+    display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap;
+  }
+  .stat-pill {
+    display: flex; align-items: center; gap: 3px;
+    font-size: 10px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.05);
+    padding: 3px 6px;
+    border-radius: 4px;
+  }
+  .stat-pill .stat-val { color: var(--text); font-weight: 600; }
+
+  /* LOAD MORE */
+  .load-more-wrap { text-align: center; margin-top: 16px; }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 2000;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    opacity: 0; visibility: hidden;
+    transition: opacity .3s, visibility .3s;
+    backdrop-filter: blur(8px);
+  }
+  .modal-overlay.open { opacity: 1; visibility: visible; }
+  .modal {
+    background: var(--mid);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.9) translateY(20px);
+    transition: transform .3s;
+    scrollbar-width: thin;
+    scrollbar-color: var(--red) transparent;
+  }
+  .modal-overlay.open .modal { transform: none; }
+  .modal-header {
+    position: relative;
+    height: 220px;
+    overflow: hidden;
+    border-radius: 16px 16px 0 0;
+  }
+  .modal-header img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .modal-header-gradient {
+    position:absolute; inset:0;
+    background: linear-gradient(to bottom, transparent 40%, var(--mid));
+  }
+  .modal-close {
+    position: absolute; top: 14px; right: 14px;
+    width: 36px; height: 36px;
+    background: rgba(0,0,0,0.6);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 50%;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .2s;
+    z-index: 10;
+  }
+  .modal-close:hover { background: var(--red); border-color: var(--red); }
+  .modal-body { padding: 24px 28px 32px; }
+  .modal-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px;
+    letter-spacing: 0.08em;
+    line-height: 1;
+  }
+  .modal-fullname { color: var(--muted); font-size: 14px; margin: 4px 0 20px; }
+  .modal-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .modal-stat-box {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+  }
+  .modal-stat-label { font-size: 10px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
+  .stat-bar-wrap { height: 4px; background: rgba(255,255,255,0.08); border-radius: 99px; margin-top: 6px; }
+  .stat-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--red), var(--gold)); }
+  .modal-stat-val { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--red); }
+  .modal-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  @media(max-width:500px){ .modal-info-grid{ grid-template-columns:1fr } .modal-stats-grid{ grid-template-columns:repeat(2,1fr) } }
+  .modal-info-item {}
+  .modal-info-key { font-size: 10px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 4px; }
+  .modal-info-val { font-size: 14px; }
+
+  /* ── COMICS GRID ── */
+  .comics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
+  }
+  .comic-card {
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform .25s, box-shadow .25s;
+    cursor: pointer;
+  }
+  .comic-card:hover {
+    transform: translateY(-4px) rotateY(3deg);
+    box-shadow: 8px 16px 40px rgba(0,0,0,0.6), 0 0 0 1px var(--border);
+  }
+  .comic-cover {
+    aspect-ratio: 2/3;
+    background: linear-gradient(160deg, #1e1e2e, #0d0d1a);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    text-align: center;
+    padding: 16px;
+    line-height: 1.2;
+    color: rgba(255,255,255,0.7);
+    position: relative;
+    overflow: hidden;
+  }
+  .comic-cover::before {
+    content:'';
+    position:absolute;inset:0;
+    background: linear-gradient(135deg, rgba(230,36,41,0.15), transparent 60%);
+  }
+  .comic-cover img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
+  .comic-info { padding: 10px 12px 14px; }
+  .comic-title { font-family:'Barlow Condensed',sans-serif; font-weight:700; font-size:13px; line-height:1.3; margin-bottom:4px; }
+  .comic-meta { font-size:11px; color:var(--muted); }
+
+  /* ── WATCH ORDER ── */
+  .watch-timeline {
+    position: relative;
+    padding-left: 40px;
+  }
+  .watch-timeline::before {
+    content:'';
+    position:absolute; left:16px; top:0; bottom:0;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--red), rgba(230,36,41,0.1));
+  }
+  .phase-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.15em;
+    color: var(--red);
+    margin: 40px 0 20px;
+    position: relative;
+  }
+  .phase-title::before {
+    content:'';
+    position:absolute; left:-32px; top:50%;
+    transform:translateY(-50%);
+    width:12px; height:12px;
+    background:var(--red);
+    border-radius:50%;
+    box-shadow:0 0 12px var(--glow);
+  }
+  .movie-row {
+    display: flex; gap: 16px; align-items: flex-start;
+    margin-bottom: 16px;
+    position: relative;
+  }
+  .movie-row::before {
+    content:'';
+    position:absolute; left:-24px; top:20px;
+    width:8px; height:1px;
+    background:rgba(255,255,255,0.2);
+  }
+  .movie-num {
+    flex:0 0 36px; height:36px;
+    background:rgba(230,36,41,0.15);
+    border:1px solid var(--border);
+    border-radius:6px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Bebas Neue',sans-serif;
+    font-size:16px;
+    color:var(--red);
+    margin-top:4px;
+  }
+  .movie-info { flex:1; }
+  .movie-title-text {
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:17px;
+    font-weight:700;
+    letter-spacing:0.05em;
+    margin-bottom:2px;
+  }
+  .movie-meta-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .movie-year { font-size:12px; color:var(--muted); }
+  .movie-badge {
+    font-size:10px;
+    padding: 2px 8px;
+    border-radius:99px;
+    font-family:'Barlow Condensed',sans-serif;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+  }
+  .badge-movie { background:rgba(230,36,41,0.15); color:var(--red); border:1px solid rgba(230,36,41,0.3); }
+  .badge-show  { background:rgba(0,150,255,0.15); color:#60b8ff; border:1px solid rgba(0,150,255,0.3); }
+  .badge-special { background:rgba(255,180,0,0.15); color:var(--gold); border:1px solid rgba(255,180,0,0.3); }
+  .movie-desc { font-size:13px; color:var(--muted); margin-top:6px; line-height:1.6; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--darker);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: clamp(40px, 6vw, 80px) clamp(16px, 4vw, 60px) 32px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr repeat(3, 1fr);
+    gap: 40px;
+    margin-bottom: 48px;
+  }
+  @media(max-width:900px){ .footer-grid{ grid-template-columns:1fr 1fr } }
+  @media(max-width:560px){ .footer-grid{ grid-template-columns:1fr } }
+  .footer-brand { }
+  .footer-logo {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:32px;
+    letter-spacing:0.15em;
+    margin-bottom:12px;
+  }
+  .footer-logo span { background:var(--red); color:white; padding:2px 10px; border-radius:3px; margin-right:8px; }
+  .footer-tagline { color:var(--muted); font-size:13px; line-height:1.7; max-width:260px; margin-bottom:20px; }
+  .footer-socials { display:flex; gap:8px; }
+  .footer-social {
+    width:36px; height:36px;
+    background:var(--card);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--muted);
+    font-size:14px;
+    text-decoration:none;
+    transition:all .2s;
+  }
+  .footer-social:hover { background:var(--red); border-color:var(--red); color:white; }
+  .footer-col-title {
+    font-family:'Barlow Condensed',sans-serif;
+    font-size:12px;
+    letter-spacing:0.3em;
+    text-transform:uppercase;
+    color:var(--red);
+    margin-bottom:16px;
+  }
+  .footer-links { list-style:none; display:flex; flex-direction:column; gap:8px; }
+  .footer-links a {
+    color:var(--muted);
+    text-decoration:none;
+    font-size:13px;
+    transition:color .2s;
+    display:flex; align-items:center; gap:6px;
+  }
+  .footer-links a:hover { color:var(--text); }
+  .footer-links a::before { content:'→'; font-size:10px; color:var(--red); }
+  .footer-bottom {
+    border-top:1px solid rgba(255,255,255,0.06);
+    padding-top:24px;
+    display:flex; gap:16px; align-items:center; justify-content:space-between;
+    flex-wrap:wrap;
+  }
+  .footer-copy { color:var(--muted); font-size:12px; }
+  .footer-copy a { color:var(--red); text-decoration:none; }
+
+  /* ── SKELETON ── */
+  .skeleton {
+    background: linear-gradient(90deg, var(--card) 25%, rgba(255,255,255,0.05) 50%, var(--card) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+  }
+  @keyframes shimmer { to{ background-position:-200% center } }
+
+  /* BACK TO TOP */
+  #btt {
+    position:fixed; bottom:24px; right:24px;
+    width:44px; height:44px;
+    background:var(--red);
+    border:none; border-radius:8px;
+    color:white; font-size:18px;
+    cursor:pointer; z-index:900;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; transform:translateY(16px);
+    transition:.3s; box-shadow:0 4px 16px rgba(230,36,41,0.4);
+  }
+  #btt.show { opacity:1; transform:none; }
+  #btt:hover { transform:translateY(-2px); }
+
+  /* MISC */
+  .tag-pill {
+    display:inline-block;
+    padding:3px 10px;
+    border-radius:99px;
+    font-size:11px;
+    font-family:'Barlow Condensed',sans-serif;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    background:rgba(230,36,41,0.12);
+    border:1px solid rgba(230,36,41,0.25);
+    color:var(--red);
+    margin:2px;
+  }
+
+  /* 3D Tilt effect on cards */
+  .tilt { transform-style:preserve-3d; perspective:800px; }
+
+  /* Particle dots bg */
+  .particles-bg {
+    position:absolute; inset:0; overflow:hidden; pointer-events:none;
+  }
+  .particle {
+    position:absolute;
+    width:2px; height:2px;
+    border-radius:50%;
+    background:rgba(230,36,41,0.5);
+    animation:floatParticle linear infinite;
+  }
+  @keyframes floatParticle {
+    from{ transform:translateY(100vh) }
+    to{ transform:translateY(-10vh) }
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity:0;
+    transform:translateY(30px);
+    transition: opacity .7s ease, transform .7s ease;
+  }
+  .reveal.visible { opacity:1; transform:none; }
+
+  /* No results */
+  .no-results {
+    grid-column:1/-1;
+    text-align:center;
+    padding:60px 20px;
+    color:var(--muted);
+  }
+  .no-results .icon { font-size:48px; margin-bottom:16px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width:6px; height:6px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:rgba(230,36,41,0.4); border-radius:99px; }
+  ::-webkit-scrollbar-thumb:hover { background:var(--red); }
+
+  /* Content divider */
+  .divider {
+    border:none;
+    height:1px;
+    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+    margin: 0 clamp(16px, 4vw, 60px);
+  }
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+
+<!-- ════════════ LOADER ════════════ -->
+<div id="loader">
+  <div class="loader-logo">MARVEL</div>
+  <div class="loader-shield"></div>
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+  <div class="loader-text">Assembling the Universe…</div>
+</div>
+
+<!-- ════════════ NAVBAR ════════════ -->
+<nav>
+  <a href="#hero" class="nav-logo"><span>M</span>UNIVERSE</a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#hero" class="active" onclick="setActive(this)">Home</a></li>
+    <li><a href="#characters" onclick="setActive(this)">Characters</a></li>
+    <li><a href="#comics" onclick="setActive(this)">Comics</a></li>
+    <li><a href="#watchorder" onclick="setActive(this)">Watch Order</a></li>
+    <li><a href="#footer" onclick="setActive(this)">About</a></li>
+  </ul>
+  <div class="nav-ham" id="navHam" onclick="toggleNav()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ════════════ HERO ════════════ -->
+<section id="hero">
+  <div class="particles-bg" id="particles"></div>
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-overlay-bottom"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Marvel Cinematic Universe</div>
+    <h1 class="hero-title">MARVEL<br><span class="accent">UNIVERSE</span></h1>
+    <p class="hero-desc">Explore every Marvel character, comic, and movie. Browse the complete MCU roster, discover iconic story arcs, and follow the official watch order — from Iron Man to the Multiverse Saga.</p>
+    <div class="hero-btns">
+      <a href="#characters" class="btn-primary">⚡ Explore Characters</a>
+      <a href="#watchorder" class="btn-outline">🎬 Watch Order</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="statChars">732</div>
+      <div class="hero-stat-label">Heroes & Villains</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">35+</div>
+      <div class="hero-stat-label">MCU Films</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">4</div>
+      <div class="hero-stat-label">MCU Phases</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ════════════ CHARACTERS ════════════ -->
+<section id="characters" style="background:var(--dark);">
+  <div class="section-label">Marvel Characters</div>
+  <h2 class="section-title">CHARACTER BROWSER</h2>
+  <p class="section-sub">All Marvel heroes, villains & antiheroes — powered by the Superhero API. Click any card to see full stats.</p>
+
+  <div class="search-bar-wrap">
+    <input type="text" class="search-input" id="charSearch" placeholder="Search characters…" oninput="filterChars()">
+    <select class="filter-select" id="charPublisher" onchange="filterChars()">
+      <option value="">All Publishers</option>
+      <option value="Marvel Comics">Marvel Comics</option>
+      <option value="DC Comics">DC Comics</option>
+    </select>
+    <select class="filter-select" id="charAlignment" onchange="filterChars()">
+      <option value="">All Alignments</option>
+      <option value="good">Heroes</option>
+      <option value="bad">Villains</option>
+      <option value="neutral">Neutral</option>
+    </select>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="setCharTab('all',this)">All</button>
+    <button class="tab-btn" onclick="setCharTab('Marvel Comics',this)">Marvel Only</button>
+    <button class="tab-btn" onclick="setCharTab('good',this)">Heroes</button>
+    <button class="tab-btn" onclick="setCharTab('bad',this)">Villains</button>
+  </div>
+
+  <div class="char-grid" id="charGrid">
+    <!-- skeletons -->
+    <div id="charLoading" style="grid-column:1/-1;text-align:center;padding:60px;color:var(--muted);">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:24px;margin-bottom:8px;">Loading characters…</div>
+      <div style="font-size:13px;">Fetching from Superhero API</div>
+    </div>
+  </div>
+  <div class="load-more-wrap">
+    <button class="btn-primary" id="loadMoreBtn" onclick="loadMore()" style="display:none">Load More Characters</button>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ════════════ COMICS ════════════ -->
+<section id="comics">
+  <div class="section-label">Comic Book Archive</div>
+  <h2 class="section-title">ICONIC COMICS</h2>
+  <p class="section-sub">Essential Marvel story arcs and comic runs that shaped the universe.</p>
+
+  <div class="search-bar-wrap">
+    <input type="text" class="search-input" id="comicSearch" placeholder="Search comics…" oninput="filterComics()">
+    <select class="filter-select" id="comicEra" onchange="filterComics()">
+      <option value="">All Eras</option>
+      <option value="Golden Age">Golden Age</option>
+      <option value="Silver Age">Silver Age</option>
+      <option value="Modern Age">Modern Age</option>
+      <option value="Current">Current</option>
+    </select>
+  </div>
+
+  <div class="comics-grid" id="comicsGrid">
+    <!-- rendered by JS -->
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ════════════ WATCH ORDER ════════════ -->
+<section id="watchorder" style="background:var(--dark);">
+  <div class="section-label">Complete MCU Watch Order</div>
+  <h2 class="section-title">MCU WATCH ORDER</h2>
+  <p class="section-sub">Every MCU film, Disney+ series and special in chronological release order. Updated through 2024.</p>
+
+  <div class="tabs" style="margin-bottom:24px;">
+    <button class="tab-btn active" onclick="setWatchTab('release',this)">Release Order</button>
+    <button class="tab-btn" onclick="setWatchTab('story',this)">Story Order</button>
+    <button class="tab-btn" onclick="setWatchTab('movies',this)">Movies Only</button>
+    <button class="tab-btn" onclick="setWatchTab('shows',this)">Shows Only</button>
+  </div>
+
+  <div id="watchOrderList" class="watch-timeline">
+    <!-- rendered by JS -->
+  </div>
+</section>
+
+<!-- ════════════ CHARACTER MODAL ════════════ -->
+<div class="modal-overlay" id="charModal" onclick="closeModal(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <img id="modalImg" src="" alt="">
+      <div class="modal-header-gradient"></div>
+      <button class="modal-close" onclick="closeModalBtn()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div>
+          <div class="modal-name" id="modalName"></div>
+          <div class="modal-fullname" id="modalFullName"></div>
+          <div id="modalAlignment"></div>
+        </div>
+        <div id="modalPublisher" style="font-size:12px;color:var(--muted);text-align:right;padding-top:8px"></div>
+      </div>
+      <div class="modal-stats-grid" id="modalStats" style="margin-top:20px"></div>
+      <div class="modal-info-grid" id="modalInfo"></div>
+      <div id="modalConnections"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ FOOTER ════════════ -->
+<footer id="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo"><span>M</span>UNIVERSE</div>
+      <p class="footer-tagline">Your ultimate Marvel companion — characters, comics, and the complete MCU timeline in one place.</p>
+      <div class="footer-socials">
+        <a href="https://wondermayank.github.io/" class="footer-social" title="Portfolio">🌐</a>
+        <a href="https://wondermayank.github.io/contact" class="footer-social" title="Contact">📧</a>
+        <a href="https://commercesehoga.github.io/help" class="footer-social" title="Support">💙</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Projects</div>
+      <ul class="footer-links">
+        <li><a href="https://wondermayank.github.io/" target="_blank">WonderMayank</a></li>
+        <li><a href="https://commercesehoga.github.io/dashboard" target="_blank">CBT Mock Platform</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Legal</div>
+      <ul class="footer-links">
+        <li><a href="https://wondermayank.github.io/terms" target="_blank">Terms of Use</a></li>
+        <li><a href="https://wondermayank.github.io/privacy" target="_blank">Privacy Policy</a></li>
+        <li><a href="https://wondermayank.github.io/disclaimer" target="_blank">Disclaimer</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Support</div>
+      <ul class="footer-links">
+        <li><a href="https://wondermayank.github.io/contact" target="_blank">Contact Owner</a></li>
+        <li><a href="https://commercesehoga.github.io/help" target="_blank">Donate / Support</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="footer-copy">© 2024 Marvel Universe Fan Site. Not affiliated with Marvel Entertainment. Data from <a href="https://akabab.github.io/superhero-api/" target="_blank">Superhero API</a>.</div>
+    <div class="footer-copy">Made with ❤️ by <a href="https://wondermayank.github.io/" target="_blank">WonderMayank</a></div>
+  </div>
+</footer>
+
+<!-- BACK TO TOP -->
+<button id="btt" onclick="scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ═══════════════════════════════════════════════
+// CURSOR
+// ═══════════════════════════════════════════════
+const cursor = document.getElementById('cursor');
+const cursorDot = document.getElementById('cursorDot');
+let mx=0,my=0,cx=0,cy=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursorDot.style.left=mx+'px';cursorDot.style.top=my+'px';});
+function animCursor(){
+  cx += (mx-cx)*0.15; cy += (my-cy)*0.15;
+  cursor.style.left=cx+'px'; cursor.style.top=cy+'px';
+  requestAnimationFrame(animCursor);
+}
+animCursor();
+document.querySelectorAll('a,button,input,select').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.style.width='30px';cursor.style.height='30px';cursor.style.background='rgba(230,36,41,0.15)';});
+  el.addEventListener('mouseleave',()=>{cursor.style.width='18px';cursor.style.height='18px';cursor.style.background='transparent';});
+});
+
+// ═══════════════════════════════════════════════
+// LOADER — 5 seconds
+// ═══════════════════════════════════════════════
+setTimeout(()=>{
+  document.getElementById('loader').classList.add('hide');
+},5000);
+
+// ═══════════════════════════════════════════════
+// PARTICLES
+// ═══════════════════════════════════════════════
+const pCont = document.getElementById('particles');
+for(let i=0;i<25;i++){
+  const p = document.createElement('div');
+  p.className='particle';
+  p.style.cssText=`left:${Math.random()*100}%;width:${Math.random()*3+1}px;height:${Math.random()*3+1}px;opacity:${Math.random()*0.5+0.1};animation-duration:${Math.random()*12+8}s;animation-delay:-${Math.random()*10}s`;
+  pCont.appendChild(p);
+}
+
+// ═══════════════════════════════════════════════
+// SCROLL REVEAL
+// ═══════════════════════════════════════════════
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// Back to top
+window.addEventListener('scroll',()=>{
+  document.getElementById('btt').classList.toggle('show', window.scrollY > 400);
+});
+
+// Nav active
+function setActive(el){ document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active')); el.classList.add('active'); }
+
+// Mobile nav toggle
+function toggleNav(){
+  document.getElementById('navLinks').classList.toggle('open');
+}
+
+// ═══════════════════════════════════════════════
+// CHARACTERS — Superhero API (no key needed)
+// ═══════════════════════════════════════════════
+let allChars=[], displayedChars=[], charPage=0, charsPerPage=40;
+let charTabFilter='all';
+
+async function loadCharacters(){
+  try {
+    // akabab's GitHub-hosted superhero API — free, no key
+    const res = await fetch('https://cdn.jsdelivr.net/gh/akabab/superhero-api@0.3.0/api/all.json');
+    allChars = await res.json();
+    document.getElementById('statChars').textContent = allChars.length;
+    charPage = 0;
+    renderChars(true);
+  } catch(e) {
+    document.getElementById('charGrid').innerHTML = `<div class="no-results"><div class="icon">⚡</div><div>Couldn't load characters. Check your connection.</div></div>`;
+  }
+}
+
+function getFilteredChars(){
+  const q = document.getElementById('charSearch').value.toLowerCase();
+  const pub = document.getElementById('charPublisher').value;
+  const align = document.getElementById('charAlignment').value;
+
+  return allChars.filter(c=>{
+    const name = c.name.toLowerCase();
+    const matchQ = !q || name.includes(q);
+    const matchPub = !pub || (c.biography?.publisher||'').includes(pub);
+    const matchAlign = !align || (c.biography?.alignment||'').toLowerCase()===align.toLowerCase();
+    const matchTab = charTabFilter==='all' ? true :
+      charTabFilter==='Marvel Comics' ? (c.biography?.publisher||'').includes('Marvel') :
+      charTabFilter==='good' ? (c.biography?.alignment||'')==='good' :
+      charTabFilter==='bad' ? (c.biography?.alignment||'')==='bad' : true;
+    return matchQ && matchPub && matchAlign && matchTab;
+  });
+}
+
+function filterChars(){ charPage=0; renderChars(true); }
+
+function setCharTab(val, btn){
+  charTabFilter=val;
+  document.querySelectorAll('.tabs .tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('charSearch').value='';
+  document.getElementById('charPublisher').value='';
+  document.getElementById('charAlignment').value='';
+  charPage=0;
+  renderChars(true);
+}
+
+function loadMore(){ charPage++; renderChars(false); }
+
+function renderChars(reset){
+  const filtered = getFilteredChars();
+  const start = reset ? 0 : charPage*charsPerPage;
+  const slice = filtered.slice(0, (charPage+1)*charsPerPage);
+  const grid = document.getElementById('charGrid');
+
+  if(reset) grid.innerHTML='';
+
+  if(filtered.length===0){
+    grid.innerHTML=`<div class="no-results"><div class="icon">🦸</div><div>No characters found</div></div>`;
+    document.getElementById('loadMoreBtn').style.display='none';
+    return;
+  }
+
+  if(reset){
+    grid.innerHTML = slice.map(c=>charCardHTML(c)).join('');
+  } else {
+    const newSlice = filtered.slice((charPage)*charsPerPage, (charPage+1)*charsPerPage);
+    grid.insertAdjacentHTML('beforeend', newSlice.map(c=>charCardHTML(c)).join(''));
+  }
+
+  const btn = document.getElementById('loadMoreBtn');
+  btn.style.display = slice.length < filtered.length ? 'inline-flex' : 'none';
+
+  // re-observe
+  grid.querySelectorAll('.char-card:not(.visible)').forEach(el=>el.classList.add('visible'));
+}
+
+function charCardHTML(c){
+  const align = (c.biography?.alignment||'neutral').toLowerCase();
+  const alignClass = align==='good'?'good':align==='bad'?'bad':'neutral';
+  const alignLabel = align==='good'?'Hero':align==='bad'?'Villain':'Neutral';
+  const img = c.images?.sm || c.images?.xs || '';
+  const str = c.powerstats?.strength||0;
+  const spd = c.powerstats?.speed||0;
+
+  return `<div class="char-card" onclick='openCharModal(${JSON.stringify(c).replace(/'/g,"&#39;")})'>
+    <div class="char-img-wrap">
+      ${img ? `<img src="${img}" alt="${c.name}" loading="lazy" onerror="this.style.display='none'">` : ''}
+      <span class="char-alignment ${alignClass}">${alignLabel}</span>
+    </div>
+    <div class="char-info">
+      <div class="char-name">${c.name}</div>
+      <div class="char-fullname">${c.biography?.fullName||c.biography?.publisher||'Marvel Comics'}</div>
+      <div class="char-stats-mini">
+        <div class="stat-pill">💪 <span class="stat-val">${str}</span></div>
+        <div class="stat-pill">⚡ <span class="stat-val">${spd}</span></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function openCharModal(c){
+  const m = document.getElementById('charModal');
+  document.getElementById('modalImg').src = c.images?.lg || c.images?.md || '';
+  document.getElementById('modalName').textContent = c.name;
+  document.getElementById('modalFullName').textContent = c.biography?.fullName||'';
+
+  const align = (c.biography?.alignment||'neutral').toLowerCase();
+  const alignClass = align==='good'?'good':align==='bad'?'bad':'neutral';
+  const alignLabel = align==='good'?'🦸 Hero':align==='bad'?'🦹 Villain':'⚖️ Neutral';
+  document.getElementById('modalAlignment').innerHTML = `<span class="char-alignment ${alignClass}" style="position:relative;top:0;right:0;display:inline-block;margin-top:8px">${alignLabel}</span>`;
+  document.getElementById('modalPublisher').textContent = c.biography?.publisher||'';
+
+  const stats = c.powerstats||{};
+  const statKeys = ['intelligence','strength','speed','durability','power','combat'];
+  document.getElementById('modalStats').innerHTML = statKeys.map(k=>`
+    <div class="modal-stat-box">
+      <div class="modal-stat-label">${k}</div>
+      <div class="modal-stat-val">${stats[k]||0}</div>
+      <div class="stat-bar-wrap"><div class="stat-bar-fill" style="width:${stats[k]||0}%"></div></div>
+    </div>`).join('');
+
+  const bio = c.biography||{};
+  const app = c.appearance||{};
+  document.getElementById('modalInfo').innerHTML = [
+    ['First Appearance', bio.firstAppearance],
+    ['Place of Birth', bio.placeOfBirth],
+    ['Race', app.race],
+    ['Gender', app.gender],
+    ['Height', (app.height||[])[0]],
+    ['Weight', (app.weight||[])[0]],
+    ['Eye Color', app.eyeColor],
+    ['Hair Color', app.hairColor],
+  ].filter(([,v])=>v&&v!=='-'&&v!=='null').map(([k,v])=>`
+    <div class="modal-info-item">
+      <div class="modal-info-key">${k}</div>
+      <div class="modal-info-val">${v}</div>
+    </div>`).join('');
+
+  const conn = c.connections||{};
+  document.getElementById('modalConnections').innerHTML = conn.groupAffiliation ? `
+    <div style="margin-top:16px">
+      <div class="modal-info-key" style="margin-bottom:8px">Group Affiliation</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.6">${conn.groupAffiliation}</div>
+    </div>` : '';
+
+  m.classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(e){ if(e.target.id==='charModal') closeModalBtn(); }
+function closeModalBtn(){ document.getElementById('charModal').classList.remove('open'); document.body.style.overflow=''; }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModalBtn(); });
+
+// ═══════════════════════════════════════════════
+// COMICS DATA
+// ═══════════════════════════════════════════════
+const comicsData = [
+  {title:'Amazing Fantasy #15',year:1962,era:'Silver Age',writer:'Stan Lee',artist:'Steve Ditko',desc:'Spider-Man\'s first appearance. Peter Parker gains his powers and learns the true cost of responsibility.'},
+  {title:'Fantastic Four #1',year:1961,era:'Silver Age',writer:'Stan Lee',artist:'Jack Kirby',desc:'The dawn of the Marvel Age. Four astronauts gain incredible powers and become Earth\'s greatest explorers.'},
+  {title:'X-Men #1',year:1963,era:'Silver Age',writer:'Stan Lee',artist:'Jack Kirby',desc:'The original five mutants assemble under Professor X to face Magneto in their debut adventure.'},
+  {title:'Avengers #1',year:1963,era:'Silver Age',writer:'Stan Lee',artist:'Jack Kirby',desc:'Loki manipulates heroes against each other, inadvertently uniting them into Earth\'s Mightiest Heroes.'},
+  {title:'Daredevil #1',year:1964,era:'Silver Age',writer:'Stan Lee',artist:'Bill Everett',desc:'Matt Murdock — blinded by radioactive chemicals — becomes the Man Without Fear, guardian of Hell\'s Kitchen.'},
+  {title:'Infinity Gauntlet',year:1991,era:'Modern Age',writer:'Jim Starlin',artist:'George Pérez',desc:'Thanos wields all six Infinity Gems and wipes out half the universe\'s population with a single snap.'},
+  {title:'Civil War',year:2006,era:'Modern Age',writer:'Mark Millar',artist:'Steve McNiven',desc:'Iron Man and Captain America lead opposing factions over superhero registration — tearing the Marvel universe apart.'},
+  {title:'Planet Hulk',year:2006,era:'Modern Age',writer:'Greg Pak',artist:'Carlo Pagulayan',desc:'The Hulk is exiled to a distant planet where he becomes a gladiator-champion and builds a new life.'},
+  {title:'House of M',year:2005,era:'Modern Age',writer:'Brian Michael Bendis',artist:'Olivier Coipel',desc:'Scarlet Witch reshapes reality into a mutant-dominated world. Her breakdown changes everything forever.'},
+  {title:'Old Man Logan',year:2008,era:'Modern Age',writer:'Mark Millar',artist:'Steve McNiven',desc:'In a dystopian future where the villains won, an aged pacifist Logan is forced back into the world.'},
+  {title:'Annihilation',year:2006,era:'Modern Age',writer:'Keith Giffen',artist:'Andrea DiVito',desc:'Annihilus leads his vast army from the Negative Zone in a war to destroy the Marvel cosmos.'},
+  {title:'Secret Invasion',year:2008,era:'Modern Age',writer:'Brian Michael Bendis',artist:'Leinil Francis Yu',desc:'The Skrulls have been replacing heroes for years. Trust no one.'},
+  {title:'Dark Reign',year:2009,era:'Modern Age',writer:'Brian Michael Bendis',artist:'Various',desc:'After the Skrull invasion, Norman Osborn rises to power and forms his own dark Avengers.'},
+  {title:'Avengers vs X-Men',year:2012,era:'Modern Age',writer:'Various',artist:'Various',desc:'The Phoenix Force returns, splitting Marvel\'s two greatest teams in an epic world-shaking conflict.'},
+  {title:'Hickman\'s Avengers',year:2012,era:'Current',writer:'Jonathan Hickman',artist:'Jerome Opeña',desc:'The greatest minds of Earth form a proactive team to face universe-level threats — setting the stage for Secret Wars.'},
+  {title:'Secret Wars (2015)',year:2015,era:'Current',writer:'Jonathan Hickman',artist:'Esad Ribic',desc:'The Marvel Multiverse collapses. All that remains is Battleworld — ruled by God Emperor Doom.'},
+  {title:'Immortal Hulk',year:2018,era:'Current',writer:'Al Ewing',artist:'Joe Bennett',desc:'A horror-inflected reimagining: the Hulk as a force of death and rebirth — truly unkillable.'},
+  {title:'King in Black',year:2020,era:'Current',writer:'Donny Cates',artist:'Ryan Stegman',desc:'Knull, god of symbiotes, arrives to bring the whole universe into darkness. Eddie Brock must become something more.'},
+  {title:'Devil\'s Reign',year:2021,era:'Current',writer:'Chip Kidd',artist:'Marco Checchetto',desc:'Wilson Fisk, now mayor of New York, declares war on all superheroes.'},
+  {title:'A.X.E.: Judgment Day',year:2022,era:'Current',writer:'Kieron Gillen',artist:'Valerio Schiti',desc:'The Eternals declare war on mutants, and a Celestial judges humanity — with the fate of all life in the balance.'},
+];
+
+let filteredComics = [...comicsData];
+function filterComics(){
+  const q = document.getElementById('comicSearch').value.toLowerCase();
+  const era = document.getElementById('comicEra').value;
+  filteredComics = comicsData.filter(c=>
+    (!q || c.title.toLowerCase().includes(q) || c.writer.toLowerCase().includes(q)) &&
+    (!era || c.era===era)
+  );
+  renderComics();
+}
+
+const coverColors = ['#1a0a10','#0a1020','#0d1a10','#15080f','#080d1a'];
+function renderComics(){
+  document.getElementById('comicsGrid').innerHTML = filteredComics.length
+    ? filteredComics.map((c,i)=>`
+      <div class="comic-card">
+        <div class="comic-cover" style="background:linear-gradient(160deg,${coverColors[i%5]},#050510)">
+          <div style="position:relative;z-index:1;padding:8px">
+            <div style="color:var(--red);font-size:22px;margin-bottom:8px">🔴</div>
+            ${c.title}
+          </div>
+        </div>
+        <div class="comic-info">
+          <div class="comic-title">${c.title}</div>
+          <div class="comic-meta">${c.year} • ${c.writer}</div>
+          <div class="comic-meta" style="margin-top:6px;font-size:12px;color:#666;line-height:1.5">${c.desc.substring(0,80)}…</div>
+          <span class="tag-pill" style="margin-top:8px">${c.era}</span>
+        </div>
+      </div>`).join('')
+    : `<div class="no-results"><div class="icon">📚</div><div>No comics found</div></div>`;
+}
+
+// ═══════════════════════════════════════════════
+// WATCH ORDER DATA
+// ═══════════════════════════════════════════════
+const watchOrderData = {
+  release: [
+    {phase:'Phase 1 — The Infinity Saga Begins',items:[
+      {n:1,title:'Iron Man',year:2008,type:'movie',desc:'Tony Stark builds a suit of armour and becomes Iron Man to fight the Ten Rings.'},
+      {n:2,title:'The Incredible Hulk',year:2008,type:'movie',desc:'Bruce Banner wrestles with his alter ego while the military hunts him.'},
+      {n:3,title:'Iron Man 2',year:2010,type:'movie',desc:'Stark faces Ivan Vanko and Justin Hammer while Nick Fury recruits him.'},
+      {n:4,title:'Thor',year:2011,type:'movie',desc:'The Asgardian prince is banished to Earth and must prove himself worthy.'},
+      {n:5,title:'Captain America: The First Avenger',year:2011,type:'movie',desc:'Steve Rogers becomes a super-soldier to fight Hydra and Red Skull in WWII.'},
+      {n:6,title:'The Avengers',year:2012,type:'movie',desc:'Earth\'s Mightiest Heroes unite to stop Loki and the Chitauri invasion of New York.'},
+    ]},
+    {phase:'Phase 2',items:[
+      {n:7,title:'Iron Man 3',year:2013,type:'movie',desc:'Stark faces the Mandarin and Aldrich Killian\'s Extremis soldiers.'},
+      {n:8,title:'Thor: The Dark World',year:2013,type:'movie',desc:'Thor battles the Dark Elf Malekith who seeks the Aether.'},
+      {n:9,title:'Captain America: The Winter Soldier',year:2014,type:'movie',desc:'Steve Rogers uncovers Hydra\'s infiltration of S.H.I.E.L.D.'},
+      {n:10,title:'Guardians of the Galaxy',year:2014,type:'movie',desc:'Peter Quill leads a ragtag crew to stop Ronan from destroying Xandar.'},
+      {n:11,title:'Guardians of the Galaxy Vol. 2',year:2017,type:'movie',desc:'Quill confronts Ego — his father and a living planet with a dark agenda.'},
+      {n:12,title:'Avengers: Age of Ultron',year:2015,type:'movie',desc:'Tony\'s AI peacekeeping program becomes Ultron, an existential threat.'},
+      {n:13,title:'Ant-Man',year:2015,type:'movie',desc:'Thief Scott Lang becomes Ant-Man to pull off a heist that saves the world.'},
+    ]},
+    {phase:'Phase 3',items:[
+      {n:14,title:'Captain America: Civil War',year:2016,type:'movie',desc:'Iron Man and Cap clash over the Sokovia Accords; Spider-Man debuts.'},
+      {n:15,title:'Black Panther',year:2018,type:'movie',desc:'T\'Challa returns to Wakanda and battles Killmonger for the throne.'},
+      {n:16,title:'Doctor Strange',year:2016,type:'movie',desc:'Surgeon Stephen Strange discovers the Mystic Arts and battles Kaecilius.'},
+      {n:17,title:'Spider-Man: Homecoming',year:2017,type:'movie',desc:'Peter Parker balances being a teenager and a superhero against the Vulture.'},
+      {n:18,title:'Thor: Ragnarok',year:2017,type:'movie',desc:'Thor must stop Hela and escape Sakaar with Hulk and Valkyrie.'},
+      {n:19,title:'Avengers: Infinity War',year:2018,type:'movie',desc:'Thanos collects all six Infinity Stones. Half of all life ceases to exist.'},
+      {n:20,title:'Ant-Man and the Wasp',year:2018,type:'movie',desc:'Scott Lang and Hope van Dyne work to rescue Janet from the Quantum Realm.'},
+      {n:21,title:'Captain Marvel',year:2019,type:'movie',desc:'Carol Danvers discovers her past and becomes the universe\'s most powerful hero.'},
+      {n:22,title:'Avengers: Endgame',year:2019,type:'movie',desc:'The surviving Avengers travel through time to undo the Snap. A final battle for the universe.'},
+      {n:23,title:'Spider-Man: Far From Home',year:2019,type:'movie',desc:'Peter Parker\'s European vacation is interrupted by Mysterio and Elementals.'},
+    ]},
+    {phase:'Phase 4 — The Multiverse Saga',items:[
+      {n:24,title:'WandaVision',year:2021,type:'show',desc:'Wanda and Vision live in a sitcom reality. Behind it lies grief, trauma, and magic.'},
+      {n:25,title:'The Falcon and the Winter Soldier',year:2021,type:'show',desc:'Sam Wilson and Bucky Barnes team up to take on the Flag Smashers.'},
+      {n:26,title:'Loki',year:2021,type:'show',desc:'The God of Mischief is recruited by the TVA and uncovers a multiverse conspiracy.'},
+      {n:27,title:'Black Widow',year:2021,type:'movie',desc:'Natasha Romanoff confronts her past in the Red Room and Dreykov.'},
+      {n:28,title:'Shang-Chi',year:2021,type:'movie',desc:'Shang-Chi faces his past and his father\'s criminal empire — the Ten Rings.'},
+      {n:29,title:'Eternals',year:2021,type:'movie',desc:'Immortal beings who have guided humanity discover a dark truth about their mission.'},
+      {n:30,title:'Hawkeye',year:2021,type:'show',desc:'Clint Barton and Kate Bishop face the Tracksuit Mafia and Eleanor Bishop.'},
+      {n:31,title:'Spider-Man: No Way Home',year:2021,type:'movie',desc:'A spell gone wrong brings villains and Spider-Men from across the multiverse.'},
+      {n:32,title:'Doctor Strange in the Multiverse of Madness',year:2022,type:'movie',desc:'Strange travels through the multiverse facing an unexpected threat from Wanda.'},
+      {n:33,title:'Thor: Love and Thunder',year:2022,type:'movie',desc:'Thor faces Gorr the God Butcher — while Jane Foster takes up Mjolnir again.'},
+      {n:34,title:'Moon Knight',year:2022,type:'show',desc:'Marc Spector and Steven Grant navigate DID and the power of Khonshu.'},
+      {n:35,title:'She-Hulk: Attorney at Law',year:2022,type:'show',desc:'Jennifer Walters balances her career and Hulk powers in a legal comedy.'},
+      {n:36,title:'Ms. Marvel',year:2022,type:'show',desc:'Kamala Khan — a Marvel superfan — discovers her own extraordinary abilities.'},
+      {n:37,title:'Black Panther: Wakanda Forever',year:2022,type:'movie',desc:'Wakanda mourns T\'Challa while facing the underwater kingdom of Talokan.'},
+      {n:38,title:'Guardians of the Galaxy Vol. 3',year:2023,type:'movie',desc:'The Guardians confront the High Evolutionary and Rocket\'s tragic origins.'},
+      {n:39,title:'Ant-Man and the Wasp: Quantumania',year:2023,type:'movie',desc:'The Lang family is sucked into the Quantum Realm and faces Kang the Conqueror.'},
+      {n:40,title:'Secret Invasion',year:2023,type:'show',desc:'Nick Fury returns to Earth to stop a secret Skrull uprising led by Gravik.'},
+      {n:41,title:'The Marvels',year:2023,type:'movie',desc:'Carol Danvers, Kamala Khan, and Monica Rambeau swap places when they use their powers.'},
+      {n:42,title:'Loki Season 2',year:2023,type:'show',desc:'Loki must save the TVA and the multiverse from total collapse.'},
+      {n:43,title:'Echo',year:2024,type:'show',desc:'Maya Lopez returns home to connect with her Native American heritage.'},
+      {n:44,title:'X-Men \'97',year:2024,type:'show',desc:'The legendary animated series continues with the original X-Men team.'},
+      {n:45,title:'Deadpool & Wolverine',year:2024,type:'movie',desc:'Wade Wilson joins the MCU with Logan\'s help — the Multiverse will never be the same.'},
+    ]},
+  ]
+};
+
+let watchTab = 'release';
+function setWatchTab(tab, btn){
+  watchTab=tab;
+  document.querySelectorAll('#watchorder .tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderWatchOrder();
+}
+
+function renderWatchOrder(){
+  const list = document.getElementById('watchOrderList');
+  const phases = watchOrderData.release;
+  let counter = 0;
+
+  list.innerHTML = phases.map(phase=>{
+    const items = phase.items.filter(item=>{
+      if(watchTab==='movies') return item.type==='movie';
+      if(watchTab==='shows') return item.type==='show';
+      return true;
+    });
+    if(!items.length) return '';
+
+    return `<div class="phase-title">${phase.phase}</div>` +
+      items.map(item=>`
+        <div class="movie-row">
+          <div class="movie-num">${++counter}</div>
+          <div class="movie-info">
+            <div class="movie-title-text">${item.title}</div>
+            <div class="movie-meta-row">
+              <span class="movie-year">${item.year}</span>
+              <span class="movie-badge ${item.type==='movie'?'badge-movie':'badge-show'}">${item.type==='movie'?'Film':'Series'}</span>
+            </div>
+            <div class="movie-desc">${item.desc}</div>
+          </div>
+        </div>`).join('');
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+loadCharacters();
+renderComics();
+renderWatchOrder();
+</script>
+</body>
+</html>
