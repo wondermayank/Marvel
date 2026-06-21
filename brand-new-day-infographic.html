@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spider-Man: Brand New Day — Special Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Bitter:wght@400;600;700;900&family=PT+Serif:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDE6D2;
+    --paper-2:#E4DBC3;
+    --ink:#1B1814;
+    --bugle-red:#B91C26;
+    --web-blue:#1F3A5C;
+    --gold:#D89A33;
+    --rule:#8B7355;
+    --rule-light:#c9bd9d;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 15% 8%, rgba(0,0,0,0.04), transparent 40%),
+      radial-gradient(circle at 85% 92%, rgba(0,0,0,0.05), transparent 40%),
+      var(--paper);
+    color:var(--ink);
+    font-family:'PT Serif', Georgia, serif;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .sheet{
+    max-width:960px;
+    margin:0 auto;
+    padding:28px 22px 40px;
+    position:relative;
+  }
+
+  /* ---------- PRESS BADGE (signature tag) ---------- */
+  .press-badge{
+    position:absolute;
+    top:18px;
+    right:16px;
+    width:84px;
+    height:84px;
+    border:2px solid var(--ink);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    transform:rotate(8deg);
+    background:
+      repeating-radial-gradient(circle, transparent 0 2px, rgba(0,0,0,0.02) 2px 4px),
+      var(--paper-2);
+    box-shadow:0 1px 4px rgba(0,0,0,0.25);
+  }
+  .press-badge::before{
+    content:"";
+    position:absolute;
+    inset:6px;
+    border:1px dashed var(--bugle-red);
+    border-radius:50%;
+  }
+  .press-badge .badge-text{
+    font-family:'JetBrains Mono', monospace;
+    font-size:8.5px;
+    line-height:1.3;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    color:var(--bugle-red);
+    font-weight:700;
+  }
+  .press-badge .badge-handle{
+    display:block;
+    font-size:10.5px;
+    color:var(--ink);
+    margin-top:2px;
+  }
+
+  @media (max-width:560px){
+    .press-badge{width:64px;height:64px;top:10px;right:10px;}
+    .press-badge .badge-text{font-size:7px;}
+    .press-badge .badge-handle{font-size:8.5px;}
+  }
+
+  /* ---------- MASTHEAD ---------- */
+  .masthead-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.06em;
+    color:var(--rule);
+    text-transform:uppercase;
+    border-bottom:1px solid var(--rule-light);
+    padding-bottom:6px;
+    padding-right:96px;
+  }
+
+  .masthead{
+    text-align:center;
+    padding:14px 0 10px;
+    border-bottom:3px solid var(--ink);
+  }
+
+  .masthead h1{
+    font-family:'UnifrakturMaguntia', 'Bitter', serif;
+    font-size:clamp(40px, 9vw, 68px);
+    margin:0;
+    letter-spacing:0.01em;
+    color:var(--ink);
+    line-height:1;
+  }
+
+  .masthead .tagline{
+    font-family:'PT Serif', serif;
+    font-style:italic;
+    font-size:12.5px;
+    color:#4a4438;
+    margin-top:6px;
+  }
+
+  .masthead-bottom{
+    display:flex;
+    justify-content:space-between;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--rule);
+    padding:6px 0;
+    border-bottom:1px solid var(--ink);
+  }
+
+  /* ---------- KICKER + HEADLINE ---------- */
+  .kicker{
+    text-align:center;
+    margin-top:26px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.25em;
+    color:var(--bugle-red);
+    font-weight:700;
+  }
+
+  .headline{
+    text-align:center;
+    font-family:'Bitter', serif;
+    font-weight:900;
+    font-size:clamp(30px, 6.4vw, 54px);
+    line-height:1.04;
+    margin:8px 0 4px;
+    letter-spacing:-0.01em;
+  }
+
+  .dek{
+    text-align:center;
+    font-style:italic;
+    font-size:16px;
+    color:#3a352b;
+    max-width:640px;
+    margin:6px auto 0;
+    line-height:1.45;
+  }
+
+  .byline{
+    text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--rule);
+    margin-top:14px;
+  }
+  .byline .correspondent{
+    color:var(--bugle-red);
+    font-weight:700;
+  }
+
+  .lede{
+    margin:20px auto 0;
+    max-width:700px;
+    font-size:15px;
+    line-height:1.62;
+    text-align:justify;
+  }
+  .lede::first-letter{
+    font-family:'Bitter', serif;
+    font-weight:900;
+    font-size:48px;
+    float:left;
+    line-height:0.8;
+    padding:4px 6px 0 0;
+    color:var(--bugle-red);
+  }
+
+  .divider{
+    border:none;
+    border-top:1px solid var(--ink);
+    margin:26px 0 22px;
+  }
+  .divider.thick{border-top:3px solid var(--ink);}
+
+  /* ---------- POSTER AD (newspaper movie-ad panel) ---------- */
+  .poster-ad{
+    display:flex;
+    gap:22px;
+    border:2px solid var(--ink);
+    padding:20px;
+    margin:24px 0 28px;
+    background:linear-gradient(180deg, #2b2620 0%, #1b1814 55%, #0d0b09 100%);
+    color:var(--paper);
+    position:relative;
+  }
+  .poster-ad::before{
+    content:"Now Playing";
+    position:absolute;
+    top:-11px;
+    left:24px;
+    background:var(--bugle-red);
+    color:var(--paper);
+    font-family:'JetBrains Mono', monospace;
+    font-size:9.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    padding:3px 10px;
+    font-weight:700;
+  }
+  .poster-art{
+    flex:0 0 150px;
+  }
+  .poster-art svg{width:100%;height:auto;display:block;}
+  .poster-info{flex:1;min-width:0;}
+  .poster-info .p-title{
+    font-family:'Bitter', serif;
+    font-weight:900;
+    font-size:22px;
+    line-height:1.1;
+    margin:0 0 4px;
+    color:var(--paper);
+  }
+  .poster-info .p-tag{
+    font-style:italic;
+    font-size:12px;
+    color:#cfc6b3;
+    margin-bottom:10px;
+    line-height:1.4;
+  }
+  .poster-info .p-billing{
+    font-family:'JetBrains Mono', monospace;
+    font-size:9.5px;
+    letter-spacing:0.03em;
+    color:#cfc6b3;
+    line-height:1.7;
+    margin-bottom:12px;
+    text-transform:uppercase;
+  }
+  .poster-info .p-billing b{color:var(--paper);}
+  .poster-meta{
+    display:flex;
+    gap:14px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .p-rating{
+    border:1px solid var(--paper);
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    font-weight:700;
+    padding:3px 7px;
+    letter-spacing:0.04em;
+  }
+  .p-date{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    font-weight:700;
+    color:var(--gold);
+    letter-spacing:0.04em;
+  }
+  .p-format{
+    font-family:'JetBrains Mono', monospace;
+    font-size:9.5px;
+    color:#cfc6b3;
+    letter-spacing:0.03em;
+  }
+  @media (max-width:560px){
+    .poster-ad{flex-direction:column;}
+    .poster-art{flex:none;width:120px;margin:0 auto;}
+  }
+
+  /* ---------- GRID ---------- */
+  .grid{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:0 26px;
+  }
+  .col{
+    border-left:1px solid var(--rule-light);
+    padding-left:20px;
+  }
+  .col:first-child{border-left:none;padding-left:0;}
+
+  .section-title{
+    font-family:'Bitter', serif;
+    font-weight:700;
+    font-size:14.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    border-bottom:2px solid var(--ink);
+    padding-bottom:5px;
+    margin-bottom:10px;
+    color:var(--web-blue);
+  }
+  .section-title.full{margin-top:6px;}
+
+  .body-text{
+    font-size:13.5px;
+    line-height:1.55;
+    margin:0 0 14px;
+    text-align:justify;
+  }
+  .body-text b{color:var(--ink);}
+  .body-text.small{font-size:12.5px;}
+
+  .subhead-small{
+    font-family:'Bitter', serif;
+    font-weight:700;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    margin:14px 0 4px;
+    color:var(--ink);
+  }
+
+  .rumor-tag{
+    display:inline-block;
+    font-family:'JetBrains Mono', monospace;
+    font-size:9px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    color:var(--gold);
+    border:1px solid var(--gold);
+    padding:1px 6px;
+    margin-left:6px;
+    transform:translateY(-1px);
+  }
+
+  /* ---------- STAT BOX ---------- */
+  .stat-box{
+    background:var(--paper-2);
+    border:1px solid var(--rule);
+    padding:14px 16px;
+    margin-bottom:16px;
+  }
+  .stat-box .title{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--bugle-red);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .stat-row{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    padding:6px 0;
+    border-bottom:1px dotted var(--rule-light);
+  }
+  .stat-row:last-child{border-bottom:none;}
+  .stat-num{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:700;
+    font-size:16px;
+    color:var(--web-blue);
+    white-space:nowrap;
+  }
+  .stat-label{
+    font-size:11px;
+    color:#4a4438;
+    text-align:right;
+    margin-left:10px;
+    line-height:1.3;
+  }
+
+  /* ---------- WANTED BOX (signature element) ---------- */
+  .wanted{
+    border:3px double var(--ink);
+    padding:16px 14px 14px;
+    margin-bottom:18px;
+    position:relative;
+    background:
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.015) 0 2px, transparent 2px 4px),
+      var(--paper);
+    transform:rotate(-0.4deg);
+  }
+  .wanted::before{
+    content:"";
+    position:absolute;
+    top:-9px;
+    left:50%;
+    transform:translateX(-50%) rotate(45deg);
+    width:14px;
+    height:14px;
+    background:var(--bugle-red);
+    border-radius:50%;
+    box-shadow:0 1px 3px rgba(0,0,0,0.4);
+  }
+  .wanted .wanted-title{
+    text-align:center;
+    font-family:'Bitter', serif;
+    font-weight:900;
+    font-size:22px;
+    letter-spacing:0.08em;
+    margin:0 0 6px;
+  }
+  .wanted .silhouette{
+    width:64px;
+    height:64px;
+    margin:6px auto 8px;
+    display:block;
+  }
+  .wanted .caption{
+    text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color:var(--bugle-red);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .wanted .desc{
+    font-size:12.5px;
+    line-height:1.55;
+    text-align:center;
+    color:#3a352b;
+  }
+  .wanted .stamp{
+    display:inline-block;
+    margin-top:10px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.1em;
+    border:2px solid var(--bugle-red);
+    color:var(--bugle-red);
+    padding:3px 8px;
+    transform:rotate(-3deg);
+  }
+  .wanted .stamp-wrap{text-align:center;}
+
+  /* ---------- CAST LIST ---------- */
+  .cast-list{list-style:none;margin:0 0 16px;padding:0;}
+  .cast-list li{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:7px 0;
+    border-bottom:1px dotted var(--rule-light);
+    font-size:12.5px;
+    line-height:1.4;
+  }
+  .cast-list li:last-child{border-bottom:none;}
+  .cast-name{font-weight:700;white-space:nowrap;}
+  .cast-role{color:#4a4438;text-align:right;font-style:italic;}
+
+  /* ---------- TIMELINE ---------- */
+  .timeline{margin:0;padding:0;list-style:none;}
+  .timeline li{
+    position:relative;
+    padding:0 0 14px 18px;
+    border-left:2px solid var(--rule-light);
+    font-size:12px;
+    line-height:1.45;
+  }
+  .timeline li:last-child{border-left:2px solid transparent;padding-bottom:0;}
+  .timeline li::before{
+    content:"";
+    position:absolute;
+    left:-5px;
+    top:2px;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--bugle-red);
+  }
+  .timeline .t-date{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10px;
+    font-weight:700;
+    color:var(--web-blue);
+    text-transform:uppercase;
+    display:block;
+  }
+
+  /* ---------- ROGUES GALLERY ---------- */
+  .rogues-grid{
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    gap:12px;
+    margin-bottom:8px;
+  }
+  .rogue-card{
+    border:1px solid var(--ink);
+    padding:10px 8px;
+    text-align:center;
+    background:var(--paper-2);
+  }
+  .rogue-card .r-name{
+    font-family:'Bitter', serif;
+    font-weight:700;
+    font-size:12px;
+    margin-bottom:3px;
+  }
+  .rogue-card .r-alias{
+    font-family:'JetBrains Mono', monospace;
+    font-size:8.5px;
+    color:var(--bugle-red);
+    text-transform:uppercase;
+    letter-spacing:0.03em;
+    margin-bottom:6px;
+  }
+  .rogue-card .r-desc{
+    font-size:10.5px;
+    line-height:1.35;
+    color:#4a4438;
+  }
+  @media (max-width:760px){
+    .rogues-grid{grid-template-columns:repeat(2, 1fr);}
+  }
+
+  /* ---------- TWO COL FEATURE ---------- */
+  .feature-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0 28px;
+    margin-bottom:8px;
+  }
+  .feature-grid .col-right{border-left:1px solid var(--rule-light);padding-left:22px;}
+  @media (max-width:680px){
+    .feature-grid{grid-template-columns:1fr;}
+    .feature-grid .col-right{border-left:none;padding-left:0;border-top:1px solid var(--rule-light);padding-top:16px;margin-top:8px;}
+  }
+
+  .tech-list{margin:0 0 0;padding:0;list-style:none;}
+  .tech-list li{
+    padding:8px 0;
+    border-bottom:1px dotted var(--rule-light);
+    font-size:12.5px;
+    line-height:1.5;
+  }
+  .tech-list li:last-child{border-bottom:none;}
+  .tech-list .tech-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:9.5px;
+    font-weight:700;
+    color:var(--web-blue);
+    text-transform:uppercase;
+    letter-spacing:0.04em;
+    display:block;
+    margin-bottom:2px;
+  }
+
+  .theory-box{
+    background:var(--paper-2);
+    border-left:4px solid var(--gold);
+    padding:10px 14px;
+    margin-top:12px;
+    font-size:12px;
+    line-height:1.5;
+  }
+  .theory-box .theory-label{
+    font-family:'JetBrains Mono', monospace;
+    font-size:9.5px;
+    font-weight:700;
+    color:var(--gold);
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    display:block;
+    margin-bottom:4px;
+  }
+
+  /* ---------- FOOTER ---------- */
+  .footer{
+    margin-top:30px;
+    border-top:3px solid var(--ink);
+    padding-top:14px;
+  }
+  .credit-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:18px 30px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.03em;
+    color:#4a4438;
+  }
+  .credit-row .label{
+    display:block;
+    color:var(--bugle-red);
+    font-weight:700;
+    text-transform:uppercase;
+    font-size:9.5px;
+    margin-bottom:2px;
+  }
+  .disclaimer{
+    margin-top:18px;
+    font-size:9.5px;
+    color:#8a8170;
+    text-align:center;
+    line-height:1.5;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .disclaimer .wm{color:var(--bugle-red);font-weight:700;}
+
+  @media (max-width:680px){
+    .grid{grid-template-columns:1fr;gap:0;}
+    .col{border-left:none;padding-left:0;border-top:1px solid var(--rule-light);padding-top:18px;margin-top:6px;}
+    .col:first-child{border-top:none;padding-top:0;margin-top:0;}
+    .lede{text-align:left;}
+    .body-text{text-align:left;}
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <div class="press-badge">
+    <div class="badge-text">Press Corps<span class="badge-handle">@wondermayank</span></div>
+  </div>
+
+  <div class="masthead-top">
+    <span>Vol. XXVI — No. 6</span>
+    <span>One Web Across The City</span>
+    <span>Price: One Scoop</span>
+  </div>
+
+  <div class="masthead">
+    <h1>The Daily Bugle</h1>
+    <div class="tagline">"All the News That's Fit to Sling"</div>
+  </div>
+
+  <div class="masthead-bottom">
+    <span>New York, NY</span>
+    <span>Final Edition</span>
+    <span>Theaters — Jul 31, 2026</span>
+  </div>
+
+  <div class="kicker">Special Report — Phase Six</div>
+  <h2 class="headline">Spider-Man:<br>Brand New Day</h2>
+  <p class="dek">Forgotten by the city he saved, Peter Parker keeps swinging anyway — until his own powers start changing in ways nobody, including him, can explain.</p>
+  <div class="byline">Reported by <span class="correspondent">@wondermayank</span> · A Sony Pictures &amp; Marvel Studios Production · Directed by Destin Daniel Cretton · In Theaters July 31, 2026</div>
+
+  <p class="lede">Four years after Doctor Strange's spell erased every memory of Peter Parker from the world, the web-slinger has spent that stretch working alone — anonymously holding the line against street crime with no one left to thank him for it. Now the strain of that double life is triggering an unexpected shift in his own abilities, surfacing just as a strange new pattern of crimes points to one of the most dangerous threats he's ever faced: a villain that, by all accounts, can't even be seen. Tom Holland has described the project less as a fourth movie and more as a full rebirth — the opening chapter of a story he's calling brand new in every sense.</p>
+
+  <div class="poster-ad">
+    <div class="poster-art">
+      <svg viewBox="0 0 150 200" xmlns="http://www.w3.org/2000/svg">
+        <rect width="150" height="200" fill="#0d0b09"/>
+        <circle cx="120" cy="28" r="14" fill="#2a2f3d"/>
+        <circle cx="20" cy="18" r="1.4" fill="#cfc6b3"/>
+        <circle cx="45" cy="34" r="1" fill="#cfc6b3"/>
+        <circle cx="75" cy="14" r="1.2" fill="#cfc6b3"/>
+        <circle cx="100" cy="50" r="1" fill="#cfc6b3"/>
+        <circle cx="30" cy="55" r="1" fill="#cfc6b3"/>
+        <g stroke="#5a5446" stroke-width="0.6" fill="none" opacity="0.7">
+          <path d="M75 10 L75 70 M40 40 L110 40 M50 18 L100 62 M100 18 L50 62"/>
+          <circle cx="75" cy="40" r="10"/>
+          <circle cx="75" cy="40" r="20"/>
+        </g>
+        <polygon points="0,200 0,120 14,118 14,140 26,110 26,150 40,100 40,200" fill="#15110d"/>
+        <polygon points="40,200 40,90 56,80 56,200" fill="#1a1612"/>
+        <polygon points="56,200 56,70 78,55 78,200" fill="#100d0a"/>
+        <polygon points="78,200 78,95 96,105 96,200" fill="#1a1612"/>
+        <polygon points="96,200 96,75 112,60 112,200" fill="#15110d"/>
+        <polygon points="112,200 112,110 132,100 132,200" fill="#1a1612"/>
+        <polygon points="132,200 132,130 150,125 150,200" fill="#100d0a"/>
+        <g fill="#d89a33" opacity="0.85">
+          <rect x="18" y="128" width="3" height="3"/><rect x="18" y="138" width="3" height="3"/>
+          <rect x="44" y="100" width="3" height="3"/><rect x="44" y="115" width="3" height="3"/><rect x="44" y="160" width="3" height="3"/>
+          <rect x="64" y="90" width="3" height="3"/><rect x="64" y="115" width="3" height="3"/><rect x="64" y="150" width="3" height="3"/>
+          <rect x="84" y="110" width="3" height="3"/><rect x="84" y="140" width="3" height="3"/>
+          <rect x="100" y="90" width="3" height="3"/><rect x="100" y="130" width="3" height="3"/>
+          <rect x="119" y="120" width="3" height="3"/><rect x="119" y="150" width="3" height="3"/>
+        </g>
+        <line x1="78" y1="55" x2="118" y2="20" stroke="#b91c26" stroke-width="0.8" opacity="0.8"/>
+        <circle cx="92" cy="40" r="3.5" fill="#b91c26"/>
+        <path d="M92 40 L88 36 M92 40 L96 36 M92 40 L88 44 M92 40 L96 44 M92 40 L84 40 M92 40 L92 32" stroke="#b91c26" stroke-width="0.7"/>
+      </svg>
+    </div>
+    <div class="poster-info">
+      <div class="p-title">Spider-Man: Brand New Day</div>
+      <div class="p-tag">The world forgot Peter Parker. He hasn't forgotten them.</div>
+      <div class="p-billing"><b>Tom Holland</b> · Zendaya · Sadie Sink · Jacob Batalon · Jon Bernthal · Michael Mando · Mark Ruffalo<br>Directed by <b>Destin Daniel Cretton</b> · Written by Chris McKenna &amp; Erik Sommers<br>Produced by Kevin Feige, Amy Pascal, Avi Arad &amp; Rachel O'Connor</div>
+      <div class="poster-meta">
+        <span class="p-rating">PG-13</span>
+        <span class="p-date">In Theaters Jul 31, 2026</span>
+        <span class="p-format">Presented in two native aspect ratios — no IMAX</span>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="grid">
+
+    <div class="col">
+      <div class="section-title">The Story</div>
+      <p class="body-text">Picking up the thread from <b>No Way Home</b> (2021), the film opens on a Peter Parker nobody recognizes. With no Avengers backup and no Stark tech to lean on, he's fully committed to a quieter, lonelier crusade as a full-time, street-level Spider-Man — until the pressure of it all starts rewriting his own physiology.</p>
+      <p class="body-text">Early script pages shared with press describe Peter, nine months into this new life, dismissing a recurring sharp headache as part of an "unhealthy" routine he's settled into. It's billed as the opening chapter of a new trilogy for the character, expected to land just ahead of the Multiverse Saga's close in the upcoming Avengers films.</p>
+
+      <div class="subhead-small">Where the Title Comes From</div>
+      <p class="body-text">The name borrows from the 2008 comic arc <b>"Brand New Day"</b> (Amazing Spider-Man #546, by Dan Slott and Steven McNiven), which followed the controversial "One More Day" storyline — the one where Peter strikes a deal with Mephisto to save Aunt May, at the cost of his marriage to Mary Jane. The MCU version keeps the erased relationships but, unlike the comics, lets Peter remember everything he's lost.</p>
+    </div>
+
+    <div class="col">
+      <div class="wanted">
+        <div class="wanted-title">WANTED</div>
+        <svg class="silhouette" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="32" cy="32" r="30" stroke="#1B1814" stroke-width="2" stroke-dasharray="4 3"/>
+          <path d="M32 14 L32 50 M18 32 L46 32 M21 19 L43 45 M43 19 L21 45" stroke="#B91C26" stroke-width="1.6"/>
+          <circle cx="32" cy="32" r="11" fill="#EDE6D2" stroke="#1B1814" stroke-width="1.6"/>
+          <text x="32" y="36" font-family="JetBrains Mono, monospace" font-size="9" text-anchor="middle" fill="#1B1814">?</text>
+        </svg>
+        <div class="caption">Threat or Menace?</div>
+        <p class="desc">A new villain is terrorizing the city — powerful, unidentified, and reportedly invisible to witnesses. The Bugle wants answers. So does Spider-Man.</p>
+        <div class="stamp-wrap"><span class="stamp">Identity: Unconfirmed</span></div>
+      </div>
+
+      <div class="stat-box">
+        <div class="title">By the Numbers</div>
+        <div class="stat-row"><span class="stat-num">40</span><span class="stat-label">days until release (from today)</span></div>
+        <div class="stat-row"><span class="stat-num">No. 38</span><span class="stat-label">film in the MCU overall</span></div>
+        <div class="stat-row"><span class="stat-num">4 yrs</span><span class="stat-label">in-story time since No Way Home</span></div>
+        <div class="stat-row"><span class="stat-num">7+</span><span class="stat-label">named villains reportedly in the mix</span></div>
+        <div class="stat-row"><span class="stat-num">2</span><span class="stat-label">native aspect ratios — a first for Spider-Man</span></div>
+        <div class="stat-row"><span class="stat-num">1B+</span><span class="stat-label">trailer views within four days — a trailer record</span></div>
+        <div class="stat-row"><span class="stat-num">5 yrs</span><span class="stat-label">best opening presales in this span, per reports</span></div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="section-title">Who's Who</div>
+      <ul class="cast-list">
+        <li><span class="cast-name">Tom Holland</span><span class="cast-role">Peter Parker / Spider-Man</span></li>
+        <li><span class="cast-name">Zendaya</span><span class="cast-role">Michelle "MJ" Jones</span></li>
+        <li><span class="cast-name">Sadie Sink</span><span class="cast-role">Role undisclosed<span class="rumor-tag">rumor</span></span></li>
+        <li><span class="cast-name">Jacob Batalon</span><span class="cast-role">Ned Leeds, building an app to ID Spider-Man</span></li>
+        <li><span class="cast-name">Jon Bernthal</span><span class="cast-role">Frank Castle / Punisher</span></li>
+        <li><span class="cast-name">Michael Mando</span><span class="cast-role">Mac Gargan / Scorpion</span></li>
+        <li><span class="cast-name">Tramell Tillman</span><span class="cast-role">Bill Metzger</span></li>
+        <li><span class="cast-name">Marvin Jones III</span><span class="cast-role">Lonnie Lincoln / Tombstone</span></li>
+        <li><span class="cast-name">Mark Ruffalo</span><span class="cast-role">Bruce Banner / Hulk</span></li>
+      </ul>
+
+      <div class="section-title" style="margin-top:18px;">Production Log</div>
+      <ul class="timeline">
+        <li><span class="t-date">Aug 1, 2025</span>New suit teased on "Spider-Man Day"; filming begins in Glasgow.</li>
+        <li><span class="t-date">Dec 19, 2025</span>Principal photography wraps.</li>
+        <li><span class="t-date">Mar 18, 2026</span>First trailer sets the all-time view record.</li>
+        <li><span class="t-date">Jun 2026</span>Tickets go on sale; second trailer confirms Hulk and the hidden villain.</li>
+        <li><span class="t-date">Jul 31, 2026</span>In theaters everywhere — no IMAX release.</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <hr class="divider thick">
+
+  <div class="section-title full">The Rogues' Gallery</div>
+  <p class="body-text small">Marketing has confirmed a deep bench of antagonists — more than any prior Holland-era Spider-Man film. Reports suggest several get only brief, montage-style introductions before the main story narrows in on its central, unseen threat.</p>
+  <div class="rogues-grid">
+    <div class="rogue-card">
+      <div class="r-name">Mac Gargan</div>
+      <div class="r-alias">Scorpion</div>
+      <div class="r-desc">Back in a new mechanized-tail suit; first caught by Spidey in Homecoming.</div>
+    </div>
+    <div class="rogue-card">
+      <div class="r-name">Lonnie Lincoln</div>
+      <div class="r-alias">Tombstone</div>
+      <div class="r-desc">Crime boss with albinism and near-indestructible, superhuman strength.</div>
+    </div>
+    <div class="rogue-card">
+      <div class="r-name">Unnamed</div>
+      <div class="r-alias">Tarantula</div>
+      <div class="r-desc">Glimpsed briefly in trailer footage; full role still under wraps.</div>
+    </div>
+    <div class="rogue-card">
+      <div class="r-name">Unnamed</div>
+      <div class="r-alias">Boomerang</div>
+      <div class="r-desc">Confirmed by the trailer; minimal screen time expected.</div>
+    </div>
+    <div class="rogue-card">
+      <div class="r-name">The Hand</div>
+      <div class="r-alias">Organization</div>
+      <div class="r-desc">The ninja order from Marvel's Daredevil universe, clashing with Scorpion in a prison sequence.</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="feature-grid">
+    <div class="col-left">
+      <div class="section-title">The Detective Angle</div>
+      <p class="body-text small">Holland has described Brand New Day as playing out like a detective story: Peter spends the film hunting a threat he can't identify, with the audience meant to piece together clues alongside him. That framing is reportedly why Sony has stayed so guarded about the true main antagonist, even with so many named villains already confirmed.</p>
+      <div class="theory-box">
+        <span class="theory-label">Fan Theory — Unconfirmed</span>
+        Sadie Sink's character has been kept almost entirely off-camera, face obscured in trailer footage. Persistent rumors point to Jean Grey, with marketing hinting at telepathic and telekinetic abilities strong enough to freeze a crowd in place. Sony has not confirmed this.
+      </div>
+    </div>
+    <div class="col-right">
+      <div class="section-title">The New Suit &amp; Tech</div>
+      <ul class="tech-list">
+        <li><span class="tech-label">Design</span>Holland helped design the suit himself, studying details fans loved from Tobey Maguire's and Andrew Garfield's costumes — including a lowered belt and boots to suggest a longer frame.</li>
+        <li><span class="tech-label">Look</span>Comic-accurate red and blue, raised webbing, and a larger chest spider logo than any of his prior suits.</li>
+        <li><span class="tech-label">EV</span>A new AI assistant — described as the closest thing Peter has to a friend these days, replacing Karen and Tony Stark's old tech entirely.</li>
+        <li><span class="tech-label">Fabricator</span>A homemade rig Peter built himself to repair his own suit, underscoring the DIY, street-level ethos the filmmakers are leaning into.</li>
+        <li><span class="tech-label">Powers</span>Marketing has teased organic webbing and a possible gamma-linked power surge, tying Peter's "evolution" directly to his scenes with Bruce Banner.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="credit-row">
+      <div><span class="label">Director</span>Destin Daniel Cretton</div>
+      <div><span class="label">Writers</span>Chris McKenna &amp; Erik Sommers</div>
+      <div><span class="label">Producers</span>Kevin Feige, Amy Pascal, Avi Arad, Rachel O'Connor</div>
+      <div><span class="label">Studios</span>Marvel Studios / Sony Pictures</div>
+      <div><span class="label">Correspondent</span>@wondermayank</div>
+    </div>
+    <div class="disclaimer">Unofficial fan infographic, compiled from public reporting and marketing materials; theories marked "rumor" are unconfirmed · Edition by <span class="wm">@wondermayank</span> · Spider-Man and all related characters &amp; titles are trademarks of Marvel/Disney and Sony Pictures Entertainment.</div>
+  </div>
+
+</div>
+</body>
+</html>
