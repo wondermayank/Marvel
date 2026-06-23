@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -167,16 +166,32 @@
     transition:transform 0.35s ease;
   }
   .panel:hover{ transform:translateY(-6px) rotate(-0.6deg); }
+  .panel-img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    display:none; transition:transform 0.5s ease, filter 0.5s ease;
+    filter:saturate(1.05) contrast(1.05);
+  }
+  .panel:hover .panel-img{ transform:scale(1.06); }
+  .panel.has-image{ background:#000; }
+  .panel.has-image::after{
+    /* bottom gradient so a caption stays legible over any photo */
+    content:''; position:absolute; left:0; right:0; bottom:0; height:46%;
+    background:linear-gradient(to top, rgba(0,0,0,0.75), transparent);
+    pointer-events:none;
+  }
   .panel .ph-label{
     position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:6px; padding:18px; text-align:center; color:var(--muted); font-size:11px;
+    gap:6px; padding:18px; text-align:center; color:var(--muted); font-size:11px; z-index:1;
   }
   .panel .ph-label b{ color:var(--ink); font-family:'Anton',sans-serif; font-size:13px; letter-spacing:0.04em; }
-  .panel .corner{ position:absolute; top:8px; left:10px; font-size:10px; color:var(--red); }
-
-  /* if a real image is dropped in via background-image inline style,
-     this keeps the placeholder label hidden */
-  .panel[style*="background-image"] .ph-label{ display:none; }
+  .panel.has-image .ph-label{ display:none; }
+  .panel .corner{ position:absolute; top:8px; left:10px; font-size:10px; color:var(--red); z-index:2; }
+  .panel .caption{
+    position:absolute; left:14px; bottom:12px; right:14px; z-index:2;
+    font-size:11px; color:var(--ink); opacity:0; transform:translateY(6px);
+    transition:opacity 0.3s ease, transform 0.3s ease;
+  }
+  .panel.has-image:hover .caption{ opacity:1; transform:translateY(0); }
 
   /* ============================================================
      CTA
@@ -295,12 +310,42 @@
       <div class="section-line"></div>
     </div>
     <div class="comic-grid">
-      <div class="panel reveal" data-slot="panel-1"><span class="corner mono">01</span><div class="ph-label"><b>Drop image here</b>panel-1 · 4:5 · webp/jpg</div></div>
-      <div class="panel reveal" data-slot="panel-2"><span class="corner mono">02</span><div class="ph-label"><b>Drop image here</b>panel-2 · 4:5 · webp/jpg</div></div>
-      <div class="panel reveal" data-slot="panel-3"><span class="corner mono">03</span><div class="ph-label"><b>Drop image here</b>panel-3 · 4:5 · webp/jpg</div></div>
-      <div class="panel reveal" data-slot="panel-4"><span class="corner mono">04</span><div class="ph-label"><b>Drop image here</b>panel-4 · 4:5 · webp/jpg</div></div>
-      <div class="panel reveal" data-slot="panel-5"><span class="corner mono">05</span><div class="ph-label"><b>Drop image here</b>panel-5 · 4:5 · webp/jpg</div></div>
-      <div class="panel reveal" data-slot="panel-6"><span class="corner mono">06</span><div class="ph-label"><b>Drop image here</b>panel-6 · 4:5 · webp/jpg</div></div>
+      <div class="panel reveal" data-slot="panel-1">
+        <span class="corner mono">01</span>
+        <img class="panel-img" alt="">
+        <div class="ph-label"><b>Drop image here</b>panel-1 · 4:5 · jpg/webp/png</div>
+        <div class="caption mono">Caption 01</div>
+      </div>
+      <div class="panel reveal" data-slot="panel-2">
+        <span class="corner mono">02</span>
+        <img class="panel-img" alt="">
+        <div class="ph-label"><b>Drop image here</b>panel-2 · 4:5 · jpg/webp/png</div>
+        <div class="caption mono">Caption 02</div>
+      </div>
+      <div class="panel reveal" data-slot="panel-3">
+        <span class="corner mono">03</span>
+        <img class="panel-img" alt="">
+        <div class="ph-label"><b>Drop image here</b>panel-3 · 4:5 · jpg/webp/png</div>
+        <div class="caption mono">Caption 03</div>
+      </div>
+      <div class="panel reveal" data-slot="panel-4">
+        <span class="corner mono">04</span>
+        <img class="panel-img" alt="">
+        <div class="ph-label"><b>Drop image here</b>panel-4 · 4:5 · jpg/webp/png</div>
+        <div class="caption mono">Caption 04</div>
+      </div>
+      <div class="panel reveal" data-slot="panel-5">
+        <span class="corner mono">05</span>
+        <img class="panel-img" alt="">
+        <div class="ph-label"><b>Drop image here</b>panel-5 · 4:5 · jpg/webp/png</div>
+        <div class="caption mono">Caption 05</div>
+      </div>
+      <div class="panel reveal" data-slot="panel-6">
+        <span class="corner mono">06</span>
+        <img class="panel-img" alt="">
+        <div class="ph-label"><b>Drop image here</b>panel-6 · 4:5 · jpg/webp/png</div>
+        <div class="caption mono">Caption 06</div>
+      </div>
     </div>
   </div>
 </section>
@@ -366,6 +411,37 @@ ScrollTrigger.create({
     const uiFade = Math.max(0, 1 - p / 0.2);
     heroOverlay.style.opacity = uiFade;
   }
+});
+
+/* ================================================================
+   GALLERY — drop a file in, it just appears
+   ----------------------------------------------------------------
+   For each panel, save your image as:
+     assets/gallery/panel-1.jpg   (or .jpeg / .webp / .png)
+     assets/gallery/panel-2.jpg   ...and so on through panel-6
+   This script tries each extension in turn. The first one that
+   exists is shown, the placeholder label disappears, and the
+   caption below it fades in on hover. Nothing to edit in the code —
+   just add files with the matching names.
+================================================================ */
+const GALLERY_PATH = 'assets/gallery';
+const GALLERY_EXTS = ['jpg', 'jpeg', 'webp', 'png'];
+
+document.querySelectorAll('.panel[data-slot]').forEach(panel => {
+  const slot = panel.dataset.slot;
+  const img  = panel.querySelector('.panel-img');
+  let i = 0;
+
+  function tryNext(){
+    if (i >= GALLERY_EXTS.length) return; // none found — placeholder stays
+    img.src = `${GALLERY_PATH}/${slot}.${GALLERY_EXTS[i]}`;
+  }
+  img.addEventListener('error', () => { i++; tryNext(); });
+  img.addEventListener('load', () => {
+    img.style.display = 'block';
+    panel.classList.add('has-image');
+  });
+  tryNext();
 });
 
 /* ================================================================
